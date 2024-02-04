@@ -2,7 +2,18 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// List of AI-generated aphorisms inspired by Jenny Holzer
+// Endpoint to serve a random aphorism
+app.get("/aphorism", (req, res) => {
+  const randomIndex = Math.floor(Math.random() * aphorisms.length);
+  const randomAphorism = aphorisms[randomIndex];
+  res.json({ aphorism: randomAphorism });
+});
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
+
 const aphorisms = [
   "A LITTLE KNOWLEDGE CAN GO A LONG WAY",
   "A LOT OF PROFESSIONALS ARE CRACKPOTS",
@@ -69,17 +80,30 @@ const aphorisms = [
   "ENSURE THAT YOUR LIFE STAYS IN FLUX",
   "EVEN YOUR FAMILY CAN BETRAY YOU",
   "EVERY ACHIEVEMENT REQUIRES A SACRIFICE",
+  "REDISTRIBUTING WEALTH IS IMPERATIVE",
+  "RELATIVITY IS NO BOON TO MANKIND",
+  "RELIGION CAUSES AS MANY PROBLEMS AS IT SOLVES",
+  "REMEMBER YOU ALWAYS HAVE FREEDOM OF CHOICE",
+  "REPETITION IS THE BEST WAY TO LEARN",
+  "RESOLUTIONS SERVE TO EASE OUR CONSCIENCE",
+  "REVOLUTION BEGINS WITH CHANGES IN THE INDIVIDUAL",
+  "ROMANTIC LOVE WAS INVENTED TO MANIPULATE WOMEN",
+  "ROUTINE IS A LINK WITH THE PAST",
+  "ROUTINE SMALL EXCESSES ARE WORSE THAN THEN THE OCCASIONAL DEBAUCH",
+  "SACRIFICING YOURSELF FOR A BAD CAUSE IS NOT A MORAL ACT",
+  "SALVATION CAN'T BE BOUGHT AND SOLD",
+  "SELF-AWARENESS CAN BE CRIPPLING",
+  "SELF-CONTEMPT CAN DO MORE HARM THAN GOOD",
+  "SELFISHNESS IS THE MOST BASIC MOTIVATION",
+  "SELFLESSNESS IS THE HIGHEST ACHIEVEMENT",
+  "SEPARATISM IS THE WAY TO A NEW BEGINNING",
+  "SEX DIFFERENCES ARE HERE TO STAY",
+  "SIN IS A MEANS OF SOCIAL CONTROL",
+  "SLIPPING INTO MADNESS IS GOOD FOR THE SAKE OF COMPARISON",
+  "SLOPPY THINKING GETS WORSE OVER TIME",
+  "SOLITUDE IS ENRICHING",
+  "SOMETIMES SCIENCE ADVANCES FASTER THAN IT SHOULD",
+  "SOMETIMES THINGS SEEM TO HAPPEN OF THEIR OWN ACCORD",
+  "SPENDING TOO MUCH TIME ON SELF-IMPROVEMENT IS ANTISOCIAL",
   // add more aphorisms here
 ];
-
-// Endpoint to serve a random aphorism
-app.get("/aphorism", (req, res) => {
-  const randomIndex = Math.floor(Math.random() * aphorisms.length);
-  const randomAphorism = aphorisms[randomIndex];
-  res.json({ aphorism: randomAphorism });
-});
-
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
