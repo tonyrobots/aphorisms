@@ -6,17 +6,71 @@ const PORT = process.env.PORT || 3000;
 // Enable CORS for all routes and origins
 app.use(cors());
 
-// Endpoint to serve a random truism
-app.get("/truism", (req, res) => {
-  const randomIndex = Math.floor(Math.random() * JHTruisms.length);
-  const randomTruism = JHTruisms[randomIndex];
-  res.json({ truism: randomTruism });
+app.get("/truisms/:type/:number?", (req, res) => {
+  const { type, number } = req.params;
+
+  // Default to 1 if number isn't specified or is invalid
+  let numTruisms = parseInt(number) || 1;
+  // clamp the number of truisms to be between 1 and 100
+  numTruisms = Math.min(Math.max(numTruisms, 1), 100);
+
+  // Select the list of truisms based on the type provided in the route
+  switch (type) {
+    case "jh":
+      selectedTruismsList = JHTruisms;
+      break;
+    case "airbnb":
+      selectedTruismsList = airBnbTruisms;
+      break;
+    default:
+      selectedTruismsList = JHTruisms;
+  }
+  // Check if the type is valid, should always be because of default case above
+  if (!selectedTruismsList) {
+    return res.status(404).json({ error: "Truism type not found" });
+  }
+
+  // Function to get 'n' random elements from an array
+  const getRandomTruisms = (list, num) => {
+    const shuffled = [...list].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, num);
+  };
+
+  const results = getRandomTruisms(selectedTruismsList, numTruisms);
+
+  // const getRandomElements = (arr, n) => {
+  //   let result = new Array(n),
+  //     len = arr.length,
+  //     taken = new Array(len);
+  //   if (n > len)
+  //     throw new RangeError(
+  //       "getRandomElements: more elements taken than available"
+  //     );
+
+  //   while (n--) {
+  //     const x = Math.floor(Math.random() * len);
+  //     result[n] = arr[x in taken ? taken[x] : x];
+  //     taken[x] = --len in taken ? taken[len] : len;
+  //   }
+  //   return result;
+  // };
+
+  // Get 'numTruisms' random truisms from the selected list
+  // const results = getRandomElements(selectedTruismsList, numTruisms);
+
+  res.json({ truisms: results });
 });
 
 app.get("/airbnb", (req, res) => {
   const randomIndex = Math.floor(Math.random() * airBnbTruisms.length);
   const randomTruism = airBnbTruisms[randomIndex];
   res.json({ truism: randomTruism });
+});
+
+app.get("/aphorism", (req, res) => {
+  const n = parseInt(req.query.n, 10) || 1;
+  const selectedAphorisms = selectRandomAphorisms(n); // Function to select 'n' random aphorisms
+  res.json({ truisms: selectedAphorisms });
 });
 
 // Start the server
@@ -44,17 +98,20 @@ const airBnbTruisms = [
   "PAINTINGS HANG STILL IN VISUAL WHISPERS",
   "BLANKETS EMBRACE TRANSIENT WARMTH",
   "SHADOWS DANCE WITH UNCERTAINTY",
+  "INVISIBLE LABOR SUSTAINS TEMPORARY COMFORT",
   "BOOKS SPEAK SILENTLY OF PASSED TIME",
   "DISHES BEAR WITNESS TO FLEETING APPETITES",
   "SHELVES HOLD FRAGMENTS OF ABSENT LIVES",
+  "UNPACKING IS A TENDER LIE",
   "DOORBELLS CHIME THROUGH EMPTY HALLS",
   "RUGS CARRY FOOTSTEPS OF ANONYMITY",
   "MEMENTOS WHISPER OF FADING MEMORIES",
   "CANDLES FLICKER IN SUBDUED FLAMES",
   "CHAIRS REMAIN VACANT IN SILENCE",
+  "STRIPPED BEDS ARE A RITUAL OF INDIGNITY",
   "MUSIC PLAYS TO EMPTY ROOMS",
   "NIGHT STANDS GUARD SLUMBERING SECRETS",
-  "TEACUPS COOL BENEATH DUSK'S VEIL",
+  "TEACUPS COOL BENEATH THE VEIL OF DUSK",
   "ALARMS AWAKEN LINGERING DREAMS",
   "WINDOWSILLS CRADLE FORGOTTEN TRINKETS",
   "CLOCKS TICK TO MARK VANISHING HOURS",
@@ -105,7 +162,6 @@ const airBnbTruisms = [
   "SAFES GUARD TEMPORARY TREASURES",
   "DESK LAMPS BEAM SHADOWED REVELATIONS",
   "KETTLES WHISTLE SONGS OF TRANSIENCE",
-  "GATEWAY CONCIERGES BECKON TOWARD UNKNOWN VISTAS",
   "CANDLE HOLDERS EMBRACE GLOWING MEMORIES",
   "LUGGAGE STANDS CARRY WEIGHTLESS BURDENS",
   "THERMOSTATS SETTLE TEMPERATURES OF EMOTION",
