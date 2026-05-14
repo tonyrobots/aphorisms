@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3666;
 
 // Enable CORS for all routes and origins
 app.use(cors());
@@ -73,10 +73,14 @@ app.get("/aphorism", (req, res) => {
   res.json({ truisms: selectedAphorisms });
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+// Start the server only when run directly (local dev). On Vercel, the app is exported.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
 
 const airBnbTruisms = [
   "DOORS HARBOR WHISPERS OF PAST TRAVELERS",
